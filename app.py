@@ -1,4 +1,4 @@
-from piccolo.columns import Boolean, Varchar
+from piccolo.columns import Boolean, Varchar, Integer
 from piccolo.table import Table, create_db_tables
 
 from litestar import Litestar, MediaType, delete, get, patch, post
@@ -14,6 +14,7 @@ class Task(Table, db=DB):
     An example table.
     """
 
+    id = Integer(primary_key=True)
     name = Varchar()
     completed = Boolean(default=False)
 
@@ -31,7 +32,7 @@ class PatchDTO(PiccoloDTO[Task]):
     tags=["Task"],
 )
 async def tasks() -> list[Task]:
-    return await Task.select().order_by(Task.id, ascending=False)
+    return await Task.objects().order_by(Task.id, ascending=False)
 
 
 @post(
