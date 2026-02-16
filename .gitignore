@@ -182,4 +182,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Postman local config
+.postman/
+
 # End of https://www.toptal.com/developers/gitignore/api/django
