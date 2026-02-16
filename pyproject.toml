@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "environs>=14.5.0",
     "granian>=2.7.0",
     "litestar>=2.19.0",
     "piccolo[all]>=1.30.0",
