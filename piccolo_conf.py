@@ -1,5 +1,5 @@
-from piccolo.engine import PostgresEngine
 from environs import Env
+from piccolo.engine import PostgresEngine
 
 env = Env()
 env.read_env(".env.dev")

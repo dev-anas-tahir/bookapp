@@ -1,10 +1,9 @@
-from piccolo.columns import Boolean, Varchar, Integer
-from piccolo.table import Table, create_db_tables
-
 from litestar import Litestar, MediaType, delete, get, patch, post
 from litestar.contrib.piccolo import PiccoloDTO
 from litestar.dto import DTOConfig, DTOData
 from litestar.exceptions import NotFoundException
+from piccolo.columns import Boolean, Integer, Varchar
+from piccolo.table import Table, create_db_tables
 
 from piccolo_conf import DB
 
@@ -76,4 +75,8 @@ async def on_startup():
     await create_db_tables(Task, if_not_exists=True)
 
 
-app = Litestar(route_handlers=[tasks, create_task, delete_task, update_task], on_startup=[on_startup], debug=True)
+app = Litestar(
+    route_handlers=[tasks, create_task, delete_task, update_task],
+    on_startup=[on_startup],
+    debug=True,
+)
