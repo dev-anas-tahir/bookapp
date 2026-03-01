@@ -11,3 +11,30 @@ dependencies = [
     "piccolo[all]>=1.30.0",
     "ruff>=0.15.0",
 ]
+
+[tool.ruff]
+line-length = 88
+extend-ignore = [
+    "PLR",  # Design related pylint codes
+]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "C",    # flake8-comprehensions
+    "B",    # flake8-bugbear
+]
+extend-select = [
+    "UP",   # pyupgrade
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["S101"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
