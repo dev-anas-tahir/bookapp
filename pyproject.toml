@@ -14,10 +14,10 @@ dependencies = [
 
 [tool.ruff]
 line-length = 88
-extend-ignore = [
+lint.extend-ignore = [
     "PLR",  # Design related pylint codes
 ]
-select = [
+lint.select = [
     "E",    # pycodestyle errors
     "W",    # pycodestyle warnings
     "F",    # pyflakes
@@ -25,7 +25,7 @@ select = [
     "C",    # flake8-comprehensions
     "B",    # flake8-bugbear
 ]
-extend-select = [
+lint.extend-select = [
     "UP",   # pyupgrade
 ]
 

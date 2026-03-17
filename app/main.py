@@ -5,7 +5,7 @@ from litestar.exceptions import NotFoundException
 from piccolo.columns import Boolean, Integer, Varchar
 from piccolo.table import Table, create_db_tables
 
-from config.piccolo_conf import DB
+from config.database import DB
 
 
 class Task(Table, db=DB):
