@@ -1,13 +1,13 @@
-import datetime
+from datetime import datetime, UTC
 
-from dtos.user_dto import CreateUserDTO, UpdateUserDTO, UserDTO
+from schemas.user import UserCreate, UserUpdate, UserRead
 from models.users import User
 
 
 class UserService:
     """Service layer for user-related operations."""
 
-    async def create_user(self, dto: CreateUserDTO) -> UserDTO:
+    async def create_user(self, dto: UserCreate) -> UserRead:
         """Create a new user."""
         user = User(
             email=dto.email,
@@ -16,7 +16,7 @@ class UserService:
             date_of_birth=dto.date_of_birth,
         )
         await user.save()
-        return UserDTO(
+        return UserRead(
             id=str(user.id),
             email=user.email,
             first_name=user.first_name,
@@ -25,12 +25,12 @@ class UserService:
             created_at=str(user.created_at),
         )
 
-    async def get_user(self, user_id: str) -> UserDTO | None:
+    async def get_user(self, user_id: str) -> UserRead | None:
         """Retrieve a user by ID."""
         user = await User.objects().where(User.id == user_id).first()
         if not user:
             return None
-        return UserDTO(
+        return UserRead(
             id=str(user.id),
             email=user.email,
             first_name=user.first_name,
@@ -39,7 +39,7 @@ class UserService:
             created_at=str(user.created_at),
         )
 
-    async def update_user(self, user_id: str, dto: UpdateUserDTO) -> UserDTO | None:
+    async def update_user(self, user_id: str, dto: UserUpdate) -> UserRead | None:
         """Update an existing user."""
         user = await User.objects().where(User.id == user_id).first()
         if not user:
@@ -53,7 +53,7 @@ class UserService:
         if dto.date_of_birth is not None:
             user.date_of_birth = dto.date_of_birth
         await user.update()
-        return UserDTO(
+        return UserRead(
             id=str(user.id),
             email=user.email,
             first_name=user.first_name,
@@ -61,12 +61,10 @@ class UserService:
             date_of_birth=str(user.date_of_birth),
             created_at=str(user.created_at),
         )
-        pass
 
     async def delete_user(self, user_id: str) -> None:
         """Soft-delete a user by ID."""
         user = await User.objects().where(User.id == user_id).first()
         if user:
-            user.deleted_at = datetime.datetime.now()
+            user.deleted_at = datetime.now(UTC)
             await user.update()
-        return None

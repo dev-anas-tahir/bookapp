@@ -1,4 +1,3 @@
-import datetime
 import uuid
 
 from piccolo.columns import UUID, Timestamp
@@ -14,7 +13,7 @@ class BaseTable(Table):
     id = UUID(primary_key=True, default=uuid.uuid4)
     created_at = Timestamp(TimestampNow(), null=False)
     updated_at = Timestamp(
-        TimestampNow(), auto_update=datetime.datetime.now, null=False
+        TimestampNow(), auto_update=TimestampNow, null=False
     )
     deleted_at = Timestamp(
         null=True, help_text="When was the record soft deleted (null if not deleted)"

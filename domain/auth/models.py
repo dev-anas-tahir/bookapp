@@ -1,7 +1,7 @@
 from piccolo.columns import Date, Varchar
 from piccolo.columns.readable import Readable
 
-from .base import BaseTable
+from src.shared.models.base import BaseTable
 
 
 class User(BaseTable):
