@@ -97,11 +97,13 @@ bookapp/
 - Controllers are **thin**: validate input, call service, return response
 - No business logic in controllers
 - No direct DB queries in controllers
+- No authorization logic in controllers (use guards instead)
 
 ### Services
 - All business logic lives in `service.py` per domain
 - Services receive typed inputs (msgspec Structs or primitives)
 - Services raise domain exceptions — never HTTP exceptions
+- Services should not handle authorization (use guards instead)
 
 ### Guards
 - Authorization via Litestar `Guard` — applied at controller class level
@@ -114,6 +116,7 @@ bookapp/
 - Define custom exception classes in `app/exceptions.py`
 - Register Litestar exception handlers in `app/exceptions.py`
 - Never raise `HTTPException` from a service — only from handlers
+- Services should raise domain exceptions — handlers convert to HTTP exceptions
 
 ### Schemas
 - One `schemas.py` per domain — no separate `dtos/` directory
@@ -175,6 +178,9 @@ and the resource from DB if needed.
 - Validate environment variables at startup — fail loudly if missing
 - Return structured error bodies, not just HTTP status codes
 - Keep controllers thin — push logic down to services
+- Use guards for authorization, not in services
+- Use msgspec for serialization (request and response), not Pydantic
+- Use granian as the ASGI server
 
 ---
 
