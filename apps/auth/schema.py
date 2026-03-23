@@ -28,7 +28,7 @@ PasswordStr = Annotated[
 # Name fields with reasonable length constraints
 NameStr = Annotated[
     str,
-    msgspec.Meta(min_length=1, max_length=100),
+    msgspec.Meta(min_length=3, max_length=100),
 ]
 
 

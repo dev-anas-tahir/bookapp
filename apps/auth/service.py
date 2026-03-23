@@ -27,9 +27,7 @@ class AuthService:
         """
 
         # Check if user already exists
-        existing_user = await User.select().where(
-            User.email == data.email
-        ).first()
+        existing_user = await User.select().where(User.email == data.email).first()
         if existing_user:
             raise UserAlreadyExistsException(data.email)
 
@@ -58,14 +56,12 @@ class AuthService:
             )
             await user.save()
 
-            print(viewer_role)
-
             # Assign the viewer role to the user
             user_role = UserRole(user=user.id, role=viewer_role["id"])
             await user_role.save()
 
         # Log the successful user creation
-        logger.ainfo(
+        logger.info(
             "user.created",
             user_id=str(user.id),
             email=data.email,

@@ -1,12 +1,13 @@
 from piccolo.apps.migrations.auto.migration_manager import MigrationManager
-from piccolo.columns.base import OnDelete
-from piccolo.columns.base import OnUpdate
-from piccolo.columns.column_types import Boolean
-from piccolo.columns.column_types import Date
-from piccolo.columns.column_types import ForeignKey
-from piccolo.columns.column_types import Timestamp
-from piccolo.columns.column_types import UUID
-from piccolo.columns.column_types import Varchar
+from piccolo.columns.base import OnDelete, OnUpdate
+from piccolo.columns.column_types import (
+    UUID,
+    Boolean,
+    Date,
+    ForeignKey,
+    Timestamp,
+    Varchar,
+)
 from piccolo.columns.defaults.date import DateNow
 from piccolo.columns.defaults.timestamp import TimestampNow
 from piccolo.columns.defaults.uuid import UUID4
@@ -66,9 +67,7 @@ async def forwards():
         migration_id=ID, app_name="auth", description=DESCRIPTION
     )
 
-    manager.add_table(
-        class_name="User", tablename="user", schema=None, columns=None
-    )
+    manager.add_table(class_name="User", tablename="user", schema=None, columns=None)
 
     manager.add_table(
         class_name="AuditLogs", tablename="audit_logs", schema=None, columns=None
@@ -81,9 +80,7 @@ async def forwards():
         columns=None,
     )
 
-    manager.add_table(
-        class_name="Role", tablename="role", schema=None, columns=None
-    )
+    manager.add_table(class_name="Role", tablename="role", schema=None, columns=None)
 
     manager.add_table(
         class_name="FeatureFlag",

@@ -1,11 +1,10 @@
 import msgspec
-from litestar import Litestar, get
+from litestar import Litestar
 from litestar.config.cors import CORSConfig
 from litestar.openapi import OpenAPIConfig
-from litestar.openapi.datastructures import ResponseSpec
-from litestar.openapi.spec.example import Example
 from litestar.response import Response
 
+from api.health import health_check
 from api.v1.router import v1_router
 from core.exceptions import (
     DomainException,
@@ -49,34 +48,13 @@ EXCEPTION_HANDLERS = {
 }
 
 
-@get(
-    "/health",
-    sync_to_thread=False,
-    responses={
-        200: ResponseSpec(
-            data_container=dict[str, str],
-            description="OK",
-            generate_examples=False,
-            examples=[
-                Example(
-                    summary="Healthy",
-                    value={"status": "healthy"},
-                )
-            ],
-        )
-    },
-)
-def health_check() -> dict[str, str]:
-    """Health check endpoint for load balancers."""
-    return {"status": "healthy"}
-
-
 # CORS configuration
 cors_config = CORSConfig(
     allow_origins=["*"],  # Configure appropriately for production
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     allow_headers=["*"],
 )
+
 
 # OpenAPI configuration
 openapi_config = OpenAPIConfig(
@@ -85,8 +63,10 @@ openapi_config = OpenAPIConfig(
     description="Book management API with authentication",
 )
 
+
 # Type encoders for custom serialization
 type_encoders = {msgspec.Struct: msgspec_encoder}
+
 
 app = Litestar(
     route_handlers=[v1_router, health_check],
