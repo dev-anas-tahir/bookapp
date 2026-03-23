@@ -1,15 +1,16 @@
-from environs import Env
-from piccolo.engine import PostgresEngine
+from piccolo.conf.apps import AppRegistry
+from piccolo.engine.postgres import PostgresEngine
 
-env = Env()
-env.read_env(".env.dev")
+from core.settings import settings
 
 DB = PostgresEngine(
     config={
-        "user": env("DB_USER"),
-        "password": env("DB_PASSWORD"),
-        "host": env("DB_HOST"),
-        "database": env("DB_NAME"),
-        "port": env.int("DB_PORT"),
+        "user": settings.db_user,
+        "password": settings.db_password,
+        "host": settings.db_host,
+        "database": settings.db_name,
+        "port": settings.db_port,
     }
 )
+
+APP_REGISTRY = AppRegistry(apps=["apps.auth.piccolo_app"])
