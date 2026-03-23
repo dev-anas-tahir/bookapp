@@ -29,21 +29,23 @@ Explain tradeoffs when making non-obvious decisions.
 | Package manager | uv | Never pip directly |
 | Linter/Formatter | ruff | Rules: E, F, I, S, UP |
 | Test runner | pytest + anyio | Async tests only via anyio mode |
+| Application server| granian | Development and production ASGI server |
+| Response serialization | msgspec | Use msgspec_json_response_handler for automatic Struct handling |
 
 ---
 
 ## Project Structure
 ```
 bookapp/
+├── main.py                  # Litestar app factory (no models, no handlers)
 ├── pyproject.toml
 ├── piccolo_conf.py          # Piccolo engine configuration (project root)
 ├── justfile
 ├── .env.dev
 ├── .env.test
 │
-├── app/
+├── core/
 │   ├── __init__.py
-│   ├── main.py              # Litestar app factory (no models, no handlers)
 │   ├── settings.py          # All config via environs
 │   ├── exceptions.py        # Custom exception classes + handlers
 │   └── plugins.py           # Plugin registration (piccolo, structlog, otel)
@@ -58,7 +60,7 @@ bookapp/
 │       ├── books.py         # BookController
 │       └── authors.py       # AuthorController
 │
-├── domain/
+├── apps/
 │   ├── users/
 │   │   ├── model.py         # User piccolo Table
 │   │   ├── service.py       # UserService
