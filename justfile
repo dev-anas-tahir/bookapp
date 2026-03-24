@@ -1,0 +1,2 @@
+runserver:
+    uv run granian --interface asgi main:app --reload

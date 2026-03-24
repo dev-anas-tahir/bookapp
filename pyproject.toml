@@ -1,0 +1,77 @@
+[project]
+name = "bookapp"
+version = "0.1.0"
+description = "A learning-focused Litestar + Piccolo ORM application implementing a books & authors management system with JWT authentication and role + ownership-based authorization."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "argon2-cffi>=25.1.0",
+    "environs>=14.5.0",
+    "granian[reload]>=2.7.0",
+    "litestar>=2.19.0",
+    "piccolo[all]>=1.30.0",
+    "pyjwt>=2.12.1",
+    "ruff>=0.15.0",
+    "structlog>=25.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.0",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[tool.ruff]
+line-length = 88
+lint.extend-ignore = [
+    "PLR",  # Design related pylint codes
+]
+lint.select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "C",    # flake8-comprehensions
+    "B",    # flake8-bugbear
+    "S",    # flake8-bandit security
+]
+lint.extend-select = [
+    "UP",   # pyupgrade
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["S101"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+# Enable bandit security checks
+[tool.bandit]
+targets = ["./"]
+exclude_dirs = [".venv/", ".git/", "tests/"]
+skips = ["B101"]  # Don't complain about "assert" statements
+
+# MyPy configuration
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+# pytest configuration
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "-ra",
+]
+
+
