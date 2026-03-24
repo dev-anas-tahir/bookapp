@@ -1,9 +1,23 @@
+import secrets
+
 import structlog
 from argon2 import PasswordHasher
 
-from apps.auth.models import Role, User, UserRole
-from apps.auth.schema import SignupRequest, SignupResponse
-from core.exceptions import InfrastructureException, UserAlreadyExistsException
+from apps.auth.models import (
+    Permission,
+    Role,
+    RolePermission,
+    User,
+    UserPermission,
+    UserRole,
+)
+from apps.auth.schema import LoginRequest, LoginResponse, SignupRequest, SignupResponse
+from core.exceptions import (
+    InfrastructureException,
+    InvalidCredentialsException,
+    UserAlreadyExistsException,
+)
+from core.security import create_access_token
 
 ph = PasswordHasher()
 logger = structlog.get_logger()
@@ -70,3 +84,87 @@ class AuthService:
 
         # Return minimal user data using response schema (excluding password)
         return SignupResponse.from_model(user)
+
+    async def login(self, data: LoginRequest, request_id: str) -> LoginResponse:
+        """
+        Login a user with proper validation, transaction safety, and logging.
+
+        Args:
+            data: LoginRequest containing user login data
+            request_id: Unique request identifier for tracking
+
+        Returns:
+            LoginResponse: Access token for the user
+
+        Raises:
+            InvalidCredentialsException: If user credentials are invalid
+        """
+        user_row = (
+            await User.select(User.id, User.email, User.password)
+            .where(User.email == data.email)
+            .first()
+        )
+        if not user_row:
+            raise InvalidCredentialsException()
+
+        user_id = user_row["id"]
+        email = user_row["email"]
+
+        try:
+            ph.verify(user_row["password"], data.password)
+        except Exception as e:
+            raise InvalidCredentialsException() from e
+
+        user_role_rows = await UserRole.select(UserRole.role).where(
+            UserRole.user == user_id
+        )
+        role_ids = [row["role"] for row in user_role_rows]
+
+        role_rows = (
+            await Role.select(Role.name).where(Role.id.is_in(role_ids))
+            if role_ids
+            else []
+        )
+        roles = [row["name"] for row in role_rows]
+
+        role_permission_rows = (
+            await RolePermission.select(RolePermission.permission).where(
+                RolePermission.role.is_in(role_ids)
+            )
+            if role_ids
+            else []
+        )
+        role_permission_ids = [row["permission"] for row in role_permission_rows]
+
+        user_permission_rows = await UserPermission.select(
+            UserPermission.permission
+        ).where(UserPermission.user == user_id)
+        user_permission_ids = [row["permission"] for row in user_permission_rows]
+
+        permission_ids = list({*role_permission_ids, *user_permission_ids})
+        permission_rows = (
+            await Permission.select(Permission.name).where(
+                Permission.id.is_in(permission_ids)
+            )
+            if permission_ids
+            else []
+        )
+        permissions = [row["name"] for row in permission_rows]
+
+        access_token = create_access_token(
+            user_id=str(user_id),
+            username=email,
+            roles=roles,
+            permissions=permissions,
+        )
+
+        refresh_token = secrets.token_urlsafe(64)
+
+        logger.info(
+            "user.login",
+            user_id=str(user_id),
+            email=email,
+            request_id=request_id,
+        )
+
+        return LoginResponse(access_token=access_token), refresh_token
