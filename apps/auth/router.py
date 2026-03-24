@@ -1,8 +1,11 @@
 from litestar import Controller, post
+from litestar.response import Response
+from litestar.status_codes import HTTP_200_OK, HTTP_201_CREATED
 
 from apps.auth.dependencies import AUTH_DEPENDENCIES
-from apps.auth.schema import SignupRequest, SignupResponse
+from apps.auth.schema import LoginRequest, LoginResponse, SignupRequest, SignupResponse
 from apps.auth.service import AuthService
+from core.settings import settings
 
 
 class AuthController(Controller):
@@ -30,3 +33,23 @@ class AuthController(Controller):
         """
         result = await auth_service.signup(data, request_id=request_id)
         return result
+
+    @post(path="/login", status_code=HTTP_200_OK)
+    async def login(
+        self,
+        auth_service: AuthService,
+        request_id: str,
+        data: LoginRequest,
+    ) -> Response[LoginResponse]:
+        result, refresh_token = await auth_service.login(data, request_id=request_id)
+        # Set refresh token in cookie
+        response = Response(content=result, status_code=HTTP_200_OK)
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            httponly=True,
+            secure=settings.app_env != "dev",
+            samesite="lax",
+            path="/",
+        )
+        return response
