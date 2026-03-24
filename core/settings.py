@@ -10,7 +10,24 @@ def get_settings_path() -> Path:
 
 
 class Settings:
-    """Application settings loaded from environment variables."""
+    """Application settings loaded from environment variables.
+
+    This class is responsible for loading application settings from
+    environment variables. It provides a convenient way to access
+    application settings in a type-safe manner.
+
+    Attributes:
+        db_user (str): Database username.
+        db_password (str): Database password.
+        db_host (str): Database host.
+        db_port (int): Database port.
+        db_name (str): Database name.
+        app_debug (bool): Whether the application is in debug mode.
+        app_env (str): Application environment (e.g. dev, prod).
+        host (str): Hostname of the application.
+        port (int): Port number of the application.
+        secret_key (str): Secret key used for encryption.
+    """
 
     def __init__(self):
         # Initialize environs

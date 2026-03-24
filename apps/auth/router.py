@@ -41,6 +41,17 @@ class AuthController(Controller):
         request_id: str,
         data: LoginRequest,
     ) -> Response[LoginResponse]:
+        """
+        Login a user with proper validation, transaction safety, and logging.
+
+        Args:
+            auth_service: The authentication service
+            request_id: Unique request identifier for logging
+            data: User login data
+
+        Returns:
+            LoginResponse: Access token for the user
+        """
         result, refresh_token = await auth_service.login(data, request_id=request_id)
         # Set refresh token in cookie
         response = Response(content=result, status_code=HTTP_200_OK)
