@@ -31,6 +31,8 @@ NameStr = Annotated[
     msgspec.Meta(min_length=3, max_length=100),
 ]
 
+DEFAULT_AUTH_SCHEME = "bearer"
+
 
 class SignupRequest(msgspec.Struct):
     """Schema for signup requests with msgspec Meta constraints."""
@@ -75,3 +77,13 @@ class SignupResponse(msgspec.Struct):
             last_name=user_model.last_name,
             date_of_birth=user_model.date_of_birth,  # Piccolo Date -> Python date
         )
+
+
+class LoginRequest(msgspec.Struct):
+    email: EmailStr
+    password: PasswordStr
+
+
+class LoginResponse(msgspec.Struct):
+    access_token: str
+    token_type: str = DEFAULT_AUTH_SCHEME
