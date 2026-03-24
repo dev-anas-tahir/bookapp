@@ -14,7 +14,7 @@ class AuthController(Controller):
     path = "/auth"
     dependencies = AUTH_DEPENDENCIES
 
-    @post(path="/signup")
+    @post(path="/signup", status_code=HTTP_201_CREATED)
     async def signup(
         self,
         auth_service: AuthService,

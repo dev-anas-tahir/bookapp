@@ -76,7 +76,7 @@ class AuthService:
 
         # Log the successful user creation
         logger.info(
-            "user.created",
+            "user.signup",
             user_id=str(user.id),
             email=data.email,
             request_id=request_id,
