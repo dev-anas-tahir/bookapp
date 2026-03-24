@@ -34,8 +34,10 @@ class Settings:
         self.host = self.env.str("HOST")
         self.port = self.env.int("PORT")
 
-        # Other settings as needed
+        # Security settings
         self.secret_key = self.env.str("SECRET_KEY")
+        self.algorithm = self.env.str("ALGORITHM")
+        self.access_token_expire_minutes = self.env.int("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 
 # Create a global settings instance
